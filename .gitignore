@@ -1,0 +1,5 @@
+node_modules/
+collector/data/
+.DS_Store
+.env*
+.dev.vars
