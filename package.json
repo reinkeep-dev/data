@@ -1,0 +1,13 @@
+{
+  "name": "reinkeep-data",
+  "private": true,
+  "type": "module",
+  "description": "Reinkeep open data collector: new Robinhood Chain pools and token contract facts.",
+  "scripts": {
+    "collect": "node collector/run-ci.ts",
+    "test": "node --test test/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": { "viem": "^2.57.17" },
+  "devDependencies": { "@types/node": "^26.6.6", "typescript": "^7.0.2" }
+}
