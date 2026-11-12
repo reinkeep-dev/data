@@ -6,6 +6,10 @@ on:
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
+    inputs:
+      resolve_batches:
+        description: "Re-check batches of 30 pools (1-40). 6 is the normal run; raise it once to clear a backlog."
+        default: "6"
 
 # One run at a time: two overlapping runs would both read the same blocks.
 concurrency:
@@ -34,3 +38,4 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           RPC_URL: ${{ secrets.RPC_URL }}
           LOGS_RPC_URL: ${{ secrets.LOGS_RPC_URL }}
+          RESOLVE_BATCHES: ${{ inputs.resolve_batches }}

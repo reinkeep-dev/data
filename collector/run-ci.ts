@@ -54,7 +54,8 @@ const stats = await runCollect({
   budgetLeft: budget.left,
   pages: 2,
   maxFacts: 100,
-  resolveBatches: 6,
+  // RESOLVE_BATCHES: a one-off manual run can clear a re-check backlog (30 pools per batch, ~2.2 s each).
+  resolveBatches: Math.min(Math.max(Number(process.env.RESOLVE_BATCHES) || 6, 1), 40),
   chain: { maxSpanBlocks: 30_000, maxLaunches: 200, maxScans: 15, launchBatches: 10 },
 });
 const summary = { requestsUsed: budget.used(), ...stats };
