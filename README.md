@@ -1,10 +1,10 @@
 # Reinkeep data
 
-Open data collector for [Reinkeep](https://reinkeep-site.reinkeep.workers.dev), the pre-trade gate for AI agents on
+Open data collector for [Reinkeep](https://reinkeep.xyz), the pre-trade gate for AI agents on
 Robinhood Chain (chain 4663). It finds new tokens and pools, reads what each token contract can do, and re-checks
-pools a day later to see if they still trade. The gate, Odds, Board, Radar and Autopsy all read this data.
+pools a day later to see if they still trade. The gate, Odds, Board and Radar all read this data.
 
-Not audited. The code is public so anyone can see where the gate's token facts come from.
+Reviewed by our team. The code is public so anyone can see where the gate's token facts come from.
 
 ## What one run does
 
@@ -21,8 +21,8 @@ Design notes: `collector/DATA-MODEL.md`.
 
 ## Schedule
 
-`.github/workflows/collector.yml` runs every 5 minutes. GitHub often starts scheduled runs late; the chain cursor
-catches up, so late runs do not skip launches.
+`.github/workflows/collector.yml` asks for a run every 5 minutes. GitHub starts scheduled runs late, in practice about
+once an hour; the chain cursor catches up, so late runs do not skip launches.
 
 Repository secrets it needs:
 
@@ -40,7 +40,7 @@ Node 24 or newer.
 
 ```bash
 npm ci
-npm test            # 143 tests, recorded real chain and market data, no network
+npm test            # 144 tests, recorded real chain and market data, no network
 npm run typecheck
 ```
 
