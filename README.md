@@ -34,13 +34,33 @@ Repository secrets it needs:
 | `RPC_URL` | Robinhood Chain JSON-RPC endpoint for contract reads |
 | `LOGS_RPC_URL` | Optional, a second endpoint used only for `eth_getLogs` |
 
+## Download the data
+
+Once a day (01:00 UTC) `.github/workflows/snapshot.yml` publishes the collected data as a
+[GitHub Release](../../releases) tagged `data-YYYY-MM-DD`. The newest one is marked Latest. Each release has one
+gzip-compressed JSON Lines file per table (one JSON object per line, fixed column order) and `manifest.json`, which
+lists every table with its row count, columns, generation time and schema version.
+
+| File | What it has |
+|---|---|
+| `tokens.jsonl.gz` | Tokens and what their contract can do (owner, supply, proxy, mint, pause, blacklist) |
+| `pools.jsonl.gz` | Pools with the numbers at our first sighting |
+| `pool_outcomes.jsonl.gz` | The re-check a day or more after creation |
+| `launches.jsonl.gz` | Launches found on the chain |
+| `daily_stats.jsonl.gz` | Per-day totals that outlive the deleted raw pools |
+
+Only public chain and market data is published. Run logs, read cursors, error notes and the gate's signed receipts
+stay private. Pools are deleted after a retention period (see `collector/DATA-MODEL.md`), so older days live on in
+`daily_stats` and in earlier releases. This repository has no license file yet, so no license is granted by the data
+itself; ask before building a product on it.
+
 ## Run it yourself
 
 Node 24 or newer.
 
 ```bash
 npm ci
-npm test            # 144 tests, recorded real chain and market data, no network
+npm test            # 152 tests, recorded real chain and market data, no network
 npm run typecheck
 ```
 

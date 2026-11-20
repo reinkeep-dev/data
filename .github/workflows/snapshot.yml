@@ -1,0 +1,49 @@
+name: snapshot
+
+# Once a day, exports the public tables of the collector database and publishes them as a GitHub Release
+# tagged data-YYYY-MM-DD. Releases, not commits: the collector never pushes to git.
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: snapshot
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci --omit=dev
+      - name: Export the public tables
+        id: export
+        run: echo "tag=$(node collector/export-snapshot.ts snapshot)" >> "$GITHUB_OUTPUT"
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.export.outputs.tag }}
+        run: |
+          # A second run on the same day replaces that day's files instead of failing.
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" snapshot/* --clobber
+          else
+            gh release create "$TAG" snapshot/* \
+              --title "Data snapshot ${TAG#data-}" \
+              --notes "Daily export of the public collector tables. Files are JSON Lines, gzip-compressed; manifest.json lists tables, row counts and columns." \
+              --target "$GITHUB_SHA" --latest
+          fi
