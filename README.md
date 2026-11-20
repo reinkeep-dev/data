@@ -51,8 +51,8 @@ lists every table with its row count, columns, generation time and schema versio
 
 Only public chain and market data is published. Run logs, read cursors, error notes and the gate's signed receipts
 stay private. Pools are deleted after a retention period (see `collector/DATA-MODEL.md`), so older days live on in
-`daily_stats` and in earlier releases. This repository has no license file yet, so no license is granted by the data
-itself; ask before building a product on it.
+`daily_stats` and in earlier releases.
+The code and the published data are under the MIT license (see `LICENSE`).
 
 ## Run it yourself
 
